@@ -7,21 +7,24 @@ sys.path.insert(0, 'src/vendor')
 import requests
 
 class Vinyl:
-    def __init__(self, title, price, url):
+    def __init__(self, title, price, url, image):
         self.title = title
         self.price = price
         self.url = url
+        self.image = image
 
     def printDetails(self):
        print(f'title: {self.title}')
        print(f'price: {self.price}')
        print(f'url:   {self.url}')
+       print(f'url:   {self.image}')
 
     def vinyltoDict(self):
         return {
             'title': self.title,
             'price': self.price,
-            'url': self.url
+            'url': self.url,
+            'image': self.image
         }
 
 def hello():
@@ -55,8 +58,6 @@ def hello():
   db = getDB()
   targetTable = db['target']
 
-    
-    
   headers = {
   'authority': 'redsky.target.com',
   'accept': 'application/json',
@@ -116,10 +117,12 @@ def hello():
 
   def initializeVinyl(products):
       for product in products:
+        print(json.dumps(product, indent=4))
         price = product['price']['formatted_current_price']
         title = product['item']['product_description']['title']
         url = product['item']['enrichment']['buy_url']
-        vinyl = Vinyl(title, price, url)
+        image = product['item']['enrichment']['images']['primary_image_url']
+        vinyl = Vinyl(title, price, url, image)
         vinylDict = vinyl.vinyltoDict()
         print(vinylDict)
         vinylArr.append(vinylDict)  
